@@ -63,10 +63,11 @@
 - name: tweak settings in ini files
   ini_file:
     path: "/etc/nix/nix.conf"
-    section: ""
-    option: "build-users-group"
-    value: ""
-    state: "present"
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: " {{ item.value }}"
+    state: "{{ item.state }}"
+  loop: "{{ nix_conf }}"
   tags: nix
 
 - name: sh <(curl https://nixos.org/nix/install) --no-daemon
@@ -75,11 +76,11 @@
   shell: |
     set -o pipefail
     curl -skL https://nixos.org/nix/install | bash -s -- --no-daemon
-    ln -s /nix/var/nix/profiles/default/bin/* /usr/local/bin/
+    ln -fs /nix/var/nix/profiles/default/bin/* /usr/local/bin/
     cp /root/.nix-profile/etc/profile.d/nix.sh /etc/profile.d/nix.sh
   args:
     executable: "/bin/bash"
-    creates: "/etc/profile.d/nix.sh"
+    creates: "/usr/local/bin/nix"
   register: result
   until: result is succeeded
   changed_when: result is not succeeded
@@ -88,7 +89,11 @@
 - name: nix-channel --update
   environment:
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-  command: nix-channel --update
+  shell: |
+    set -o pipefail
+    su -l -s /bin/bash -c 'nix-channel --update'
+  args:
+    executable: "/bin/bash"
   register: result
   until: result is succeeded
   changed_when: result is not succeeded
@@ -97,7 +102,11 @@
 - name: nix-env -iA nixpkgs.nix
   environment:
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-  command: nix-env -iA nixpkgs.nix
+  shell: |
+    set -o pipefail
+    su -l -s /bin/bash -c 'nix-env -iA nixpkgs.nix'
+  args:
+    executable: "/bin/bash"
   register: result
   until: result is succeeded
   changed_when: result is not succeeded

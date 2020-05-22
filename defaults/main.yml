@@ -13,3 +13,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+# Nix configs.
+nix_conf:
+  - { state: "present", section: "", option: "build-users-group", value: "" }
+  - { state: "present", section: "", option: "sandbox", value: "false" }
+  - { state: "present", section: "", option: "use-sqlite-wal", value: "false" }
