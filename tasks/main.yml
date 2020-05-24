@@ -77,7 +77,7 @@
     set -o pipefail
     curl -skL https://nixos.org/nix/install | bash -s -- --no-daemon
     ln -fs /nix/var/nix/profiles/default/bin/* /usr/local/bin/
-    cp /root/.nix-profile/etc/profile.d/nix.sh /etc/profile.d/nix.sh
+    ln -fs /root/.nix-profile/etc/profile.d/nix.sh /etc/profile.d/
   args:
     executable: "/bin/bash"
     creates: "/usr/local/bin/nix"
@@ -91,7 +91,8 @@
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   shell: |
     set -o pipefail
-    su -l -s /bin/bash -c 'nix-channel --update'
+    source /etc/profile
+    nix-channel --update
   args:
     executable: "/bin/bash"
   register: result
@@ -104,7 +105,8 @@
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   shell: |
     set -o pipefail
-    su -l -s /bin/bash -c 'nix-env -iA nixpkgs.nix'
+    source /etc/profile
+    nix-env -iA nixpkgs.nix
   args:
     executable: "/bin/bash"
   register: result
