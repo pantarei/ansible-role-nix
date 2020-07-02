@@ -75,15 +75,28 @@
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   shell: |
     set -o pipefail
-    curl -skL https://nixos.org/nix/install | bash -s -- --no-daemon
-    ln -fs /nix/var/nix/profiles/default/bin/* /usr/local/bin/
-    ln -fs /root/.nix-profile/etc/profile.d/nix.sh /etc/profile.d/
+    sh <(curl https://nixos.org/nix/install) --no-daemon
+    /nix/var/nix/profiles/default/bin/nix-collect-garbage --delete-old
+    /nix/var/nix/profiles/default/bin/nix-store --optimise
+    /nix/var/nix/profiles/default/bin/nix-store --verify --check-contents
   args:
     executable: "/bin/bash"
     creates: "/usr/local/bin/nix"
   register: result
   until: result is succeeded
   changed_when: result is not succeeded
+  tags: nix
+
+- name: copy templates
+  template:
+    dest: "{{ item.dest }}"
+    src: "{{ item.src | default('./templates' + item.dest + '.j2') }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('0644') }}"
+  loop:
+    - { dest: "/etc/profile.d/nix.sh" }
+  notify:
   tags: nix
 
 - name: nix-channel --update
