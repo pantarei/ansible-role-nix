@@ -15,8 +15,11 @@
 # limitations under the License.
 
 _apt:
+  - { state: "latest", name: "bash" }
   - { state: "latest", name: "ca-certificates" }
   - { state: "latest", name: "curl" }
+  - { state: "latest", name: "make" }
+  - { state: "latest", name: "pkg-config" }
   - { state: "latest", name: "sudo" }
   - { state: "latest", name: "tar" }
   - { state: "latest", name: "wget" }
