@@ -70,18 +70,18 @@
   loop: "{{ nix_conf }}"
   tags: nix
 
-- name: sh <(curl https://nixos.org/nix/install) --no-daemon
+- name: sh <(curl -skL https://nixos.org/nix/install) --no-daemon
   environment:
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   shell: |
     set -o pipefail
-    sh <(curl https://nixos.org/nix/install) --no-daemon
+    sh <(curl -skL https://nixos.org/nix/install) --no-daemon
     /nix/var/nix/profiles/default/bin/nix-collect-garbage --delete-old
     /nix/var/nix/profiles/default/bin/nix-store --optimise
     /nix/var/nix/profiles/default/bin/nix-store --verify --check-contents
   args:
     executable: "/bin/bash"
-    creates: "/usr/local/bin/nix"
+    creates: "/nix/var/nix/profiles/default/bin/nix"
   register: result
   until: result is succeeded
   changed_when: result is not succeeded
