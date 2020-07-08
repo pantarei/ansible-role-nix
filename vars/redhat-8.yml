@@ -18,8 +18,6 @@ _yum:
   - { state: "latest", name: "bash" }
   - { state: "latest", name: "ca-certificates" }
   - { state: "latest", name: "curl" }
-  - { state: "latest", name: "make" }
-  - { state: "latest", name: "pkgconfig" }
   - { state: "latest", name: "sudo" }
   - { state: "latest", name: "tar" }
   - { state: "latest", name: "wget" }

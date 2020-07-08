@@ -109,6 +109,18 @@
   notify:
   tags: nix
 
+- name: prepare files
+  file:
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('0644') }}"
+    state: "{{ item.state | default('file') }}"
+  loop:
+    - { dest: "/etc/nix/nix.conf" }
+    - { dest: "/etc/profile.d/nix.sh" }
+  tags: nix
+
 - name: sh <(curl -skL https://nixos.org/nix/install) --no-daemon
   environment:
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
