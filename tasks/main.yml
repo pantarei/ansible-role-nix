@@ -83,8 +83,8 @@
     mode: "{{ item.mode | default('0755') }}"
     state: "{{ item.state | default('directory') }}"
   loop:
-    - { dest: "/etc/nix" }
-    - { dest: "/nix" }
+    - { dest: "/etc/nix", owner: "root", group: "nixbld" }
+    - { dest: "/nix", owner: "root", group: "nixbld" }
   tags: nix
 
 - name: tweak settings in ini files
@@ -117,7 +117,7 @@
     mode: "{{ item.mode | default('0644') }}"
     state: "{{ item.state | default('file') }}"
   loop:
-    - { dest: "/etc/nix/nix.conf" }
+    - { dest: "/etc/nix/nix.conf", owner: "root", group: "nixbld" }
     - { dest: "/etc/profile.d/nix.sh" }
   tags: nix
 
@@ -173,6 +173,20 @@
     set -o pipefail
     source /etc/profile
     nix-env -iA nixpkgs.nix
+  args:
+    executable: "/bin/bash"
+  register: result
+  until: result is succeeded
+  changed_when: result is not succeeded
+  tags: nix
+
+- name: nix-env -iA cachix -f https://cachix.org/api/v1/install
+  environment:
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  shell: |
+    set -o pipefail
+    source /etc/profile
+    nix-env -iA cachix -f https://cachix.org/api/v1/install
   args:
     executable: "/bin/bash"
   register: result
