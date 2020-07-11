@@ -138,20 +138,6 @@
   changed_when: result is not succeeded
   tags: nix
 
-- name: nix upgrade-nix
-  environment:
-    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-  shell: |
-    set -o pipefail
-    source /etc/profile
-    nix upgrade-nix
-  args:
-    executable: "/bin/bash"
-  register: result
-  until: result is succeeded
-  changed_when: result is not succeeded
-  tags: nix
-
 - name: nix-channel --update
   environment:
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
@@ -187,6 +173,34 @@
     set -o pipefail
     source /etc/profile
     nix-env -iA cachix -f https://cachix.org/api/v1/install
+  args:
+    executable: "/bin/bash"
+  register: result
+  until: result is succeeded
+  changed_when: result is not succeeded
+  tags: nix
+
+- name: nix upgrade-nix
+  environment:
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  shell: |
+    set -o pipefail
+    source /etc/profile
+    nix upgrade-nix
+  args:
+    executable: "/bin/bash"
+  register: result
+  until: result is succeeded
+  changed_when: result is not succeeded
+  tags: nix
+
+- name: nix optimise-store
+  environment:
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  shell: |
+    set -o pipefail
+    source /etc/profile
+    nix optimise-store
   args:
     executable: "/bin/bash"
   register: result
