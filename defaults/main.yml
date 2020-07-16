@@ -20,5 +20,5 @@ nix_conf:
   - { state: "present", section: "", option: "cores", value: "8" }
   - { state: "present", section: "", option: "max-jobs", value: "8" }
   - { state: "present", section: "", option: "sandbox", value: "false" }
-  - { state: "present", section: "", option: "trusted-users", value: "root" }
+  - { state: "present", section: "", option: "trusted-users", value: "root @nixbld" }
   - { state: "present", section: "", option: "use-sqlite-wal", value: "false" }

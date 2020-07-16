@@ -58,6 +58,7 @@
 - name: useradd
   user:
     name: "{{ item.name }}"
+    group: "nixbld"
     groups: "nixbld"
     home: "/nonexistent"
     shell: "/usr/sbin/nologin"
