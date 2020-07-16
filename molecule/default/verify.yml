@@ -21,6 +21,11 @@
     - name: nix --version
       environment:
         PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-      command: nix --version
+      shell: |
+        set -o pipefail
+        source /etc/profile
+        nix --version
+      args:
+        executable: "/bin/bash"
       register: result
       changed_when: result is not succeeded

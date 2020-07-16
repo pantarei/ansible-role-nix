@@ -48,6 +48,34 @@
   ignore_errors: true
   tags: nix
 
+- name: groupadd
+  group:
+    name: "nixbld"
+    system: true
+    state: "present"
+  tags: nix
+
+- name: useradd
+  user:
+    name: "{{ item.name }}"
+    group: "nixbld"
+    groups: "nixbld"
+    home: "/nonexistent"
+    shell: "/usr/sbin/nologin"
+    system: true
+    create_home: false
+    state: "present"
+  loop:
+    - { name: "nixbld0" }
+    - { name: "nixbld1" }
+    - { name: "nixbld2" }
+    - { name: "nixbld3" }
+    - { name: "nixbld4" }
+    - { name: "nixbld5" }
+    - { name: "nixbld6" }
+    - { name: "nixbld7" }
+  tags: nix
+
 - name: prepare directories
   file:
     dest: "{{ item.dest }}"
@@ -56,8 +84,8 @@
     mode: "{{ item.mode | default('0755') }}"
     state: "{{ item.state | default('directory') }}"
   loop:
-    - { dest: "/etc/nix" }
-    - { dest: "/nix" }
+    - { dest: "/etc/nix", owner: "root", group: "nixbld" }
+    - { dest: "/nix", owner: "root", group: "nixbld" }
   tags: nix
 
 - name: tweak settings in ini files
@@ -70,17 +98,42 @@
   loop: "{{ nix_conf }}"
   tags: nix
 
-- name: sh <(curl https://nixos.org/nix/install) --no-daemon
+- name: copy templates
+  template:
+    dest: "{{ item.dest }}"
+    src: "{{ item.src | default('./templates' + item.dest + '.j2') }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('0644') }}"
+  loop:
+    - { dest: "/etc/profile.d/nix.sh" }
+  notify:
+  tags: nix
+
+- name: prepare files
+  file:
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('0644') }}"
+    state: "{{ item.state | default('file') }}"
+  loop:
+    - { dest: "/etc/nix/nix.conf", owner: "root", group: "nixbld" }
+    - { dest: "/etc/profile.d/nix.sh" }
+  tags: nix
+
+- name: sh <(curl -skL https://nixos.org/nix/install) --no-daemon
   environment:
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   shell: |
     set -o pipefail
-    curl -skL https://nixos.org/nix/install | bash -s -- --no-daemon
-    ln -fs /nix/var/nix/profiles/default/bin/* /usr/local/bin/
-    ln -fs /root/.nix-profile/etc/profile.d/nix.sh /etc/profile.d/
+    sh <(curl -skL https://nixos.org/nix/install) --no-daemon
+    /nix/var/nix/profiles/default/bin/nix-collect-garbage --delete-old
+    /nix/var/nix/profiles/default/bin/nix-store --optimise
+    /nix/var/nix/profiles/default/bin/nix-store --verify --check-contents
   args:
     executable: "/bin/bash"
-    creates: "/usr/local/bin/nix"
+    creates: "/nix/var/nix/profiles/default/bin/nix"
   register: result
   until: result is succeeded
   changed_when: result is not succeeded
@@ -107,6 +160,48 @@
     set -o pipefail
     source /etc/profile
     nix-env -iA nixpkgs.nix
+  args:
+    executable: "/bin/bash"
+  register: result
+  until: result is succeeded
+  changed_when: result is not succeeded
+  tags: nix
+
+- name: nix-env -iA cachix -f https://cachix.org/api/v1/install
+  environment:
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  shell: |
+    set -o pipefail
+    source /etc/profile
+    nix-env -iA cachix -f https://cachix.org/api/v1/install
+  args:
+    executable: "/bin/bash"
+  register: result
+  until: result is succeeded
+  changed_when: result is not succeeded
+  tags: nix
+
+- name: nix upgrade-nix
+  environment:
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  shell: |
+    set -o pipefail
+    source /etc/profile
+    nix upgrade-nix
+  args:
+    executable: "/bin/bash"
+  register: result
+  until: result is succeeded
+  changed_when: result is not succeeded
+  tags: nix
+
+- name: nix optimise-store
+  environment:
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  shell: |
+    set -o pipefail
+    source /etc/profile
+    nix optimise-store
   args:
     executable: "/bin/bash"
   register: result
