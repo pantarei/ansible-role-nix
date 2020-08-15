@@ -92,9 +92,10 @@
   ini_file:
     path: "/etc/nix/nix.conf"
     section: "{{ item.section }}"
-    option: "{{ item.option }}"
-    value: " {{ item.value }}"
-    state: "{{ item.state }}"
+    option: "{{ item.option | default(None) or omit }}"
+    value: "{{ item.value | default(None) or omit }}"
+    mode: "{{ item.mode | default('0644') }}"
+    state: "{{ item.state | default('present') }}"
   loop: "{{ nix_conf }}"
   tags: nix
 
