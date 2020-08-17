@@ -90,12 +90,12 @@
 
 - name: tweak settings in ini files
   ini_file:
-    path: "/etc/nix/nix.conf"
     section: "{{ item.section }}"
-    option: "{{ item.option | default(None) or omit }}"
-    value: "{{ item.value | default(None) or omit }}"
-    mode: "{{ item.mode | default('0644') }}"
-    state: "{{ item.state | default('present') }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    state: "{{ item.state }}"
+    path: "/etc/nix/nix.conf"
+    mode: "0644"
   loop: "{{ nix_conf }}"
   tags: nix
 
