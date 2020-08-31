@@ -1,7 +1,7 @@
 # Ansible Role for Nix
 
 [![Travis](https://img.shields.io/travis/com/alvistack/ansible-role-nix.svg)](https://travis-ci.com/alvistack/ansible-role-nix)
-[![GitHub release](https://img.shields.io/github/release/alvistack/ansible-role-nix.svg)](https://github.com/alvistack/ansible-role-nix)
+[![GitHub release](https://img.shields.io/github/release/alvistack/ansible-role-nix.svg)](https://github.com/alvistack/ansible-role-nix/releases)
 [![GitHub license](https://img.shields.io/github/license/alvistack/ansible-role-nix.svg)](https://github.com/alvistack/ansible-role-nix/blob/master/LICENSE)
 [![Ansible Role](https://img.shields.io/badge/galaxy-alvistack.nix-blue.svg)](https://galaxy.ansible.com/alvistack/nix)
 
