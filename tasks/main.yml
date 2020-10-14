@@ -16,7 +16,6 @@
 
 - name: include default variables
   include_vars: "../vars/main.yml"
-  tags: nix
 
 - name: include release specific variables
   include_vars: "{{ lookup('first_found', _params) }}"
@@ -31,7 +30,6 @@
       paths:
         - "../vars"
   ignore_errors: true
-  tags: nix
 
 - name: include release specific tasks
   include_tasks: "{{ lookup('first_found', _params) }}"
@@ -46,14 +44,12 @@
       paths:
         - "."
   ignore_errors: true
-  tags: nix
 
 - name: groupadd
   group:
     name: "nixbld"
     system: true
     state: "present"
-  tags: nix
 
 - name: useradd
   user:
@@ -74,7 +70,6 @@
     - { name: "nixbld5" }
     - { name: "nixbld6" }
     - { name: "nixbld7" }
-  tags: nix
 
 - name: prepare directories
   file:
@@ -86,7 +81,6 @@
   loop:
     - { dest: "/etc/nix", owner: "root", group: "nixbld" }
     - { dest: "/nix", owner: "root", group: "nixbld" }
-  tags: nix
 
 - name: tweak settings in ini files
   ini_file:
@@ -97,7 +91,6 @@
     path: "/etc/nix/nix.conf"
     mode: "0644"
   loop: "{{ nix_conf }}"
-  tags: nix
 
 - name: copy templates
   template:
@@ -109,7 +102,6 @@
   loop:
     - { dest: "/etc/profile.d/nix.sh" }
   notify:
-  tags: nix
 
 - name: prepare files
   file:
@@ -121,7 +113,6 @@
   loop:
     - { dest: "/etc/nix/nix.conf", owner: "root", group: "nixbld" }
     - { dest: "/etc/profile.d/nix.sh" }
-  tags: nix
 
 - name: sh <(curl -skL https://nixos.org/nix/install) --no-daemon
   environment:
@@ -138,7 +129,6 @@
   register: result
   until: result is succeeded
   changed_when: result is not succeeded
-  tags: nix
 
 - name: nix-channel --update
   environment:
@@ -152,7 +142,6 @@
   register: result
   until: result is succeeded
   changed_when: result is not succeeded
-  tags: nix
 
 - name: nix-env -iA nixpkgs.nix
   environment:
@@ -166,7 +155,6 @@
   register: result
   until: result is succeeded
   changed_when: result is not succeeded
-  tags: nix
 
 - name: nix-env -iA cachix -f https://cachix.org/api/v1/install
   environment:
@@ -180,7 +168,6 @@
   register: result
   until: result is succeeded
   changed_when: result is not succeeded
-  tags: nix
 
 - name: nix upgrade-nix
   environment:
@@ -194,7 +181,6 @@
   register: result
   until: result is succeeded
   changed_when: result is not succeeded
-  tags: nix
 
 - name: nix optimise-store
   environment:
@@ -208,4 +194,3 @@
   register: result
   until: result is succeeded
   changed_when: result is not succeeded
-  tags: nix
