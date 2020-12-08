@@ -80,6 +80,7 @@
     state: "{{ item.state | default('directory') }}"
   loop:
     - { dest: "/etc/nix", owner: "root", group: "nixbld" }
+    - { dest: "/etc/profile.d" }
     - { dest: "/nix", owner: "root", group: "nixbld" }
 
 - name: tweak settings in ini files
