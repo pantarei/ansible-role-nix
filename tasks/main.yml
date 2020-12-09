@@ -119,7 +119,7 @@
   environment:
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   shell: |
-    set -o pipefail
+    set -euo pipefail
     sh <(curl -skL https://nixos.org/nix/install) --no-daemon
     /nix/var/nix/profiles/default/bin/nix-collect-garbage --delete-old
     /nix/var/nix/profiles/default/bin/nix-store --optimise
@@ -135,7 +135,7 @@
   environment:
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   shell: |
-    set -o pipefail
+    set -euo pipefail
     source /etc/profile
     nix-channel --update
   args:
@@ -148,7 +148,7 @@
   environment:
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   shell: |
-    set -o pipefail
+    set -euo pipefail
     source /etc/profile
     nix-env -iA nixpkgs.nix
   args:
@@ -161,7 +161,7 @@
   environment:
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   shell: |
-    set -o pipefail
+    set -euo pipefail
     source /etc/profile
     nix-env -iA cachix -f https://cachix.org/api/v1/install
   args:
@@ -174,7 +174,7 @@
   environment:
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   shell: |
-    set -o pipefail
+    set -euo pipefail
     source /etc/profile
     nix upgrade-nix
   args:
@@ -187,7 +187,7 @@
   environment:
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   shell: |
-    set -o pipefail
+    set -euo pipefail
     source /etc/profile
     nix optimise-store
   args:
