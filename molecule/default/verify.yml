@@ -23,7 +23,7 @@
         PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
       shell: |
         set -euo pipefail
-        source /etc/profile
+        source /etc/profile.d/nix.sh
         nix --version
       args:
         executable: "/bin/bash"
