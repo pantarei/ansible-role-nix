@@ -115,12 +115,12 @@
     - { dest: "/etc/nix/nix.conf", owner: "root", group: "nixbld" }
     - { dest: "/etc/profile.d/nix.sh" }
 
-- name: sh <(curl -skL https://nixos.org/nix/install) --no-daemon
+- name: sh <(curl -skL http://nixos.org/nix/install) --no-daemon
   environment:
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   shell: |
     set -euo pipefail
-    sh <(curl -skL https://nixos.org/nix/install) --no-daemon
+    sh <(curl -skL http://nixos.org/nix/install) --no-daemon
     /nix/var/nix/profiles/default/bin/nix-collect-garbage --delete-old
     /nix/var/nix/profiles/default/bin/nix-store --optimise
     /nix/var/nix/profiles/default/bin/nix-store --verify --check-contents
@@ -157,13 +157,13 @@
   until: result is succeeded
   changed_when: result is not succeeded
 
-- name: nix-env -iA cachix -f https://cachix.org/api/v1/install
+- name: nix-env -iA cachix -f http://cachix.org/api/v1/install
   environment:
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   shell: |
     set -euo pipefail
     source /etc/profile.d/nix.sh
-    nix-env -iA cachix -f https://cachix.org/api/v1/install
+    nix-env -iA cachix -f http://cachix.org/api/v1/install
   args:
     executable: "/bin/bash"
   register: result
