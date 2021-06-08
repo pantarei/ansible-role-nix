@@ -14,18 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- hosts: all
-  remote_user: root
-  become: true
-  tasks:
-    - name: nix --version
-      environment:
-        PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-      shell: |
-        set -euxo pipefail
-        source /etc/profile.d/nix.sh
-        nix --version
-      args:
-        executable: "/bin/bash"
-      register: result
-      changed_when: result is not succeeded
+_apt:
+  - { state: "latest", name: "bash" }
+  - { state: "latest", name: "ca-certificates" }
+  - { state: "latest", name: "curl" }
+  - { state: "latest", name: "sudo" }
+  - { state: "latest", name: "wget" }
