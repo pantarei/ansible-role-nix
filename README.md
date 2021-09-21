@@ -1,5 +1,7 @@
 # Ansible Role for Nix
 
+<img src="/alvistack.svg" width="75" alt="AlviStack">
+
 [![Gitlab pipeline status](https://img.shields.io/gitlab/pipeline/alvistack/ansible-role-nix/master)](https://gitlab.com/alvistack/ansible-role-nix/-/pipelines)
 [![GitHub release](https://img.shields.io/github/release/alvistack/ansible-role-nix.svg)](https://github.com/alvistack/ansible-role-nix/releases)
 [![GitHub license](https://img.shields.io/github/license/alvistack/ansible-role-nix.svg)](https://github.com/alvistack/ansible-role-nix/blob/master/LICENSE)
