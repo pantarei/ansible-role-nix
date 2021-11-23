@@ -191,13 +191,13 @@
   until: result is succeeded
   changed_when: result is not succeeded
 
-- name: nix optimise-store
+- name: nix --extra-experimental-features nix-command store optimise
   environment:
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   shell: |
     set -euxo pipefail
     source /etc/profile.d/nix.sh
-    nix optimise-store
+    nix --extra-experimental-features nix-command store optimise
   args:
     executable: "/bin/bash"
   register: result
